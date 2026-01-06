@@ -1,0 +1,117 @@
+Script started on 2019-12-13 02:36:03-0800
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/sort[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/sort[00m$ g++ program6.cpp sort.cpp
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/sort[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/sort[00m$ ./a.out 
+------------------------------------------------
+Selection sort:
+------------------------------------------------
+Data set magnitude: 100
+    Random set
+	Number of swaps: 96
+	Number of comparisons: 5050
+    Low to high set
+	Number of swaps: 0
+	Number of comparisons: 5050
+    High to low set
+	Number of swaps: 50
+	Number of comparisons: 5050
+
+Data set magnitude: 1000
+    Random set
+	Number of swaps: 992
+	Number of comparisons: 500500
+    Low to high set
+	Number of swaps: 0
+	Number of comparisons: 500500
+    High to low set
+	Number of swaps: 500
+	Number of comparisons: 500500
+
+Data set magnitude: 10000
+    Random set
+	Number of swaps: 9991
+	Number of comparisons: 50005000
+    Low to high set
+	Number of swaps: 0
+	Number of comparisons: 50005000
+    High to low set
+	Number of swaps: 5000
+	Number of comparisons: 50005000
+
+------------------------------------------------
+Mergesort:
+------------------------------------------------
+Data set magnitude: 100
+    Random set
+	Number of swaps: 324
+	Number of comparisons: 540
+    Low to high set
+	Number of swaps: 0
+	Number of comparisons: 356
+    High to low set
+	Number of swaps: 672
+	Number of comparisons: 316
+
+Data set magnitude: 1000
+    Random set
+	Number of swaps: 5003
+	Number of comparisons: 8725
+    Low to high set
+	Number of swaps: 0
+	Number of comparisons: 5044
+    High to low set
+	Number of swaps: 9976
+	Number of comparisons: 4932
+
+Data set magnitude: 10000
+    Random set
+	Number of swaps: 66803
+	Number of comparisons: 120401
+    Low to high set
+	Number of swaps: 0
+	Number of comparisons: 69008
+    High to low set
+	Number of swaps: 133616
+	Number of comparisons: 64608
+
+------------------------------------------------
+Quicksort:
+------------------------------------------------
+Data set magnitude: 100
+    Random set
+	Number of swaps: 346
+	Number of comparisons: 563
+    Low to high set
+	Number of swaps: 99
+	Number of comparisons: 4950
+    High to low set
+	Number of swaps: 2599
+	Number of comparisons: 4950
+Data set magnitude: 1000
+    Random set
+	Number of swaps: 6314
+	Number of comparisons: 11013
+    Low to high set
+	Number of swaps: 999
+	Number of comparisons: 499500
+    High to low set
+	Number of swaps: 250999
+	Number of comparisons: 499500
+Data set magnitude: 10000
+    Random set
+	Number of swaps: 87142
+	Number of comparisons: 149845
+    Low to high set
+	Number of swaps: 9999
+	Number of comparisons: 49995000
+    High to low set
+	Number of swaps: 25009999
+	Number of comparisons: 49995000
+
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/sort[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/sort[00m$ wc -l *.cpp *.h
+  176 program6.cpp
+  201 sort.cpp
+   30 sort.h
+  407 total
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/sort[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/sort[00m$ exit
+
+Script done on 2019-12-13 02:36:21-0800

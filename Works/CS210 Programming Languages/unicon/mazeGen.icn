@@ -1,0 +1,365 @@
+# mazeGen.icn
+#
+# Miguel Villanueva
+# CS 210
+#
+# Program Description:
+#   Procedurally generates a maze or map, typical to those found in roguelike
+#   games. Maze or map is only representative of what is possible/playable in
+#   a given level and does not feature any gameplay mechanics.
+#
+# Known Issues:
+#   1) Occasionally, rooms will not connect  ( Very rare )
+#	 a) Due to how corridors are generated, there is the possibility
+#	    of corridors never meeting
+#	 b) More likely to happen with less rooms
+#
+#   2) Sometimes the algorithm will create an infinite loop  ( Common )
+#        a) This may be due to a sparsity of space combined with
+#	    an overabundance of generated rooms
+#        b) Lowering the max amount of rooms helps avoid this problem
+#	    however I found the maps more interesting with more rooms
+#
+#   3) Every now and then, a 2x3 corridor will spawn outside of a
+#      west facing door  ( Rare )
+#	 a) This is not necessarily an issue, however, it is worth noting
+#	    as it is an inconsistency
+#
+# Extra Credit Attempts:
+#   1) Legend for map/maze
+#   2) Connecting rooms via lone corridors
+#   3) Spawning events (Dragons and Chests)  
+# ============================================================================
+
+procedure main()
+    #==== Spawn the first room ====#
+    L := list(24, repl(" ", 78))
+    len1 := (?4) + 1                        # Must be at least 2
+    width1 := (?19) + 3                     # Must be at least 4
+    pos_x1 := (?(78 - (width1 + 1))) + 1    # Must be at least L[ ][2]
+    pos_y1 := (?(19 - (len1 + 1))) + 2      # Must be at least L[3][ ]
+    gen(L, len1, width1, pos_y1, pos_x1)
+    #==== Spawn starting point ====#
+    L[pos_y1+(?(len1))][pos_x1+(?(width1-2))] := "<"
+
+    #==== Spawn additional rooms ====#
+    Lock := 1
+    rooms := (?8)
+    while (rooms >= 1) do
+    {
+	while(Lock = 1) do
+	{ 
+            len := (?4) + 1
+            width := (?19) + 3
+            pos_x := (?(78 - (width + 1))) + 1
+            pos_y := (?(19 - (len + 1))) + 2
+            side1 := (pos_x + width)
+            side2 := (pos_y + len)
+            every a := (pos_y-1) to (side2+2) do
+            {
+                every b:= (pos_x-1) to (side1+1) do
+                {
+                    if(L[a][b] ~== " ") then break
+                }
+	        if(L[a][b] ~== " ") then break
+	        else if(a = (side2+2) & b = (side1+1)) then Lock := 0
+            }
+	}
+        gen(L , len, width, pos_y, pos_x)
+        rooms -:= 1
+	Lock := 1
+    }
+    #==== Spawn ending point ====#
+    L[pos_y+(?(len))][pos_x+(?(width-2))] := ">"
+
+    #==== West door posibility ====#
+    every c := 1 to 24 do
+        every x := find("#|", L[c]) do
+            if(L[c-1][x] == " " & L[c+1][x] == " ") then
+		L[c][x+1] := "+"
+
+    #==== East door posibility ====#
+    every d := 1 to 24 do
+	every x := find("|#", L[d]) do
+	    if(L[d-1][x+1] == " " & L[d+1][x+1] == " ") then
+		L[d][x] := "+"
+
+    In := ("."|"<"|">")
+    #==== North door posibility ====#
+    every e := 1 to 24 do
+	every x := find(" # ", L[e]) do
+	    if(L[e-1][x+1] == "-" & L[e-2][x+1] == In) then
+		L[e-1][x+1] := "+"
+	    else if(L[e-1][x+1] == "-" & L[e-2][x+1] == "|") then
+	    {
+		if(L[e-1][x] == "-") then
+		{
+		    L[e-1][x] := "+"
+		    L[e][x] := "#"
+		}
+		else if(L[e-1][x+2] == "-") then
+		{
+		    L[e-1][x+2] := "+"
+		    L[e][x+2] := "#"
+		}
+	    }
+
+    #==== South door posibility ====#
+    every f := 1 to 24 do
+	every x := find(" # ", L[f]) do
+	    if(L[f+1][x+1] == "-" & L[f+2][x+1] == In) then
+		L[f+1][x+1] := "+"
+            else if(L[f+1][x+1] == "-" & L[f+2][x+1] == "|") then
+            {
+                if(L[f+1][x] == "-") then
+                {
+                    L[f+1][x] := "+"
+                    L[f][x] := "#"
+                }
+                else if(L[f+1][x+2] == "-") then
+                {
+                    L[f+1][x+2] := "+"
+                    L[f][x+2] := "#"
+                }
+            }
+
+    #==== Spawn Dragon(s) =====#
+    every g := 3 to 24 by 7 do
+	every x := find("............", L[g]) do
+	{
+	    L[g][x+(?11)] := "D"
+	    break
+	}
+
+    #==== Spawn Chest(s) ====#
+    every h := 3 to 24 do
+	every x := find("..", L[h]) do
+	{
+	    rand := (?3)
+	    if(rand = 2) then
+	    {
+		L[h][x+(?2)-1] := "$"
+	    }
+	    break
+	}
+
+    legend()
+    print(L)          
+end
+
+# =========================================
+#  print
+#    Prints the maze, a list of 24 strings
+# =========================================
+procedure print(L)
+    every write(!L)
+end
+
+# =====================================
+# legend
+#   Displays a legend for the map/maze
+# =====================================
+procedure legend()
+    write(repl("=", 78))
+    write("|  L E G E N D  |")
+    write("-----------------")
+    #write()
+    write("            -  Corridor  [  #  ]        -  Stairs Down  [  >  ]")
+    write("            -  Doors     [  +  ]        -  Stairs Up    [  <  ]")
+    write("            -  Walls     [ | - ]        -  Dragon       [  D  ]")
+    write("            -  Indoors   [  .  ]        -  Chest        [  $  ]")
+    write("      ", repl("=", 66), "      ")
+    write(repl("=", 78))
+end
+
+# ===================================
+#  path
+#    Generates corridors in the maze
+# ===================================
+procedure path(L, y, x)
+    #==== Right ====#	
+    every m := x to 77 do
+    {
+	if(L[y+1][m] == "#") then break
+	else if(L[y-1][m] == "#") then break
+	else if(L[y][m+2] == "-") then break
+	else if(L[y][m+1] == " ") then
+        {
+	    L[y][m+1] := "#"
+        }
+	else break
+    }
+
+    #==== Left ====#
+    every n := x to 2 by -1 do
+    {
+	if(L[y+1][n] == "#") then break
+	else if(L[y-1][n] == "#") then break
+	else if(L[y][n-2] == "-") then break
+	else if(L[y][n-1] == " ") then
+	{
+	    L[y][n-1] := "#"
+	}
+	else break
+    }
+    
+    #==== Down ====#
+    every o := y to 23 do
+    {
+	if(L[o+1][x+1] == "#") then 
+	{
+	    if(L[o+1][x] == " ") then
+	    {
+		L[o+1][x] := "#"
+	        break
+	    }
+	    else if(L[o+1][x] == "#") then break
+	    else if(L[o][x+1] == " ") then
+	    {
+		L[o][x+1] := "#"
+		break
+	    }
+	}
+	else if(L[o+1][x-1] == "#") then
+	{
+	    if(L[o+1][x] == " ") then
+	    {
+		L[o+1][x] := "#"
+		break
+	    }
+            else if(L[o+1][x] == "#") then break
+	    else if(L[o][x-1] == " ") then
+	    {
+		L[o][x-1] := "#"
+		break
+	    }
+
+	}
+	else if(L[o+1][x] == " ") then
+	{
+	    L[o+1][x] := "#"
+	}
+	else break
+    }
+
+    #==== Up ====#
+    every p := y to 2 by -1 do
+    {
+        if(L[p-1][x+1] == "#") then
+        {
+            if(L[p-1][x] == " ") then
+            {
+                L[p-1][x] := "#"
+                break
+            }
+            else if(L[p-1][x] == "#") then break
+            else if(L[p][x+1] == " ") then
+            {
+                L[p][x+1] := "#"
+                break
+            }
+        }
+        else if(L[p-1][x-1] == "#") then
+        {
+            if(L[p-1][x] == " ") then
+            {
+                L[p-1][x] := "#"
+                break
+            }
+            else if(L[p-1][x] == "#") then break
+            else if(L[p][x-1] == " ") then
+            {
+                L[p][x-1] := "#"
+                break
+            }
+
+        }
+        else if(L[p-1][x] == " ") then
+        {
+            L[p-1][x] := "#"
+        }
+        else break
+    }
+end
+
+# ===============================
+#  gen
+#    Generates rooms in the maze
+# ===============================
+procedure gen(L, len, w, y, x)
+    #==== Spawn room ====#
+    L[y][x:(x+w)] := repl("-", w)
+    every j := 1 to len do
+    {
+        L[y+j][x] := "|"
+        L[y+j][(x+1):(x+w-1)] := repl(".", w-2) 
+        L[y+j][x+w-1] := "|"
+    }
+    L[y+len+1][x:(x+w)] := repl ("-", w)
+
+    #==== Spawn door(s) ====#
+    rand := (?2)
+    nWall := y
+    sWall := y + len + 1
+    wWall := x
+    eWall := x + w - 1
+    wall := ?["north", "south", "east", "west"]
+    if wall == ("north" | "south") then
+    {
+	door := x+(?(w-2))
+	door2 := x+(?(w-2))
+	if wall == "north" then
+        {
+	    L[nWall][door] := "+"
+            L[nWall-1][door] := "#"
+	    path(L, nWall-1, door)
+	    if(rand = 2) then
+	    {
+		L[sWall][door2] := "+"
+		L[sWall+1][door2] := "#"
+		path(L, sWall+1, door2)
+	    }
+        }
+        else
+        {
+	    L[sWall][door] := "+"
+	    L[sWall+1][door] := "#"
+	    path(L, sWall+1, door)
+	    if(rand = 2) then
+	    {
+		L[nWall][door2] := "+"
+		L[nWall-1][door2] := "#"
+		path(L, nWall-1, door2)
+	    }
+        }
+    }
+    else
+    {
+	door := y+(?(len))
+	door2 := y+(?(len))
+	if wall == "west" then
+        {
+	    L[door][wWall] := "+"
+	    L[door][wWall-1] := "#"
+	    path(L, door, wWall-1)
+	    if(rand = 2) then
+	    {
+		L[door2][eWall] := "+"
+		L[door2][eWall+1] := "#"
+		path(L, door2, eWall+1)
+	    }
+        }
+	else
+	{
+	    L[door][eWall] := "+"
+	    L[door][eWall+1] := "#"
+	    path(L, door, eWall+1) 
+	    if(rand = 2) then
+	    {
+		L[door2][wWall] := "+"
+		L[door2][wWall-1] := "#"
+		path(L, door2, wWall-1)
+	    }
+	}
+    }  
+end

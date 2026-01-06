@@ -1,0 +1,134 @@
+Script started on 2019-12-04 04:23:54-0800
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ g++[K[K[Kg++ [K[K+ dictionar[K[K[K[K[K[K[K[K[K[K[K[K[Kg++ dc[Kictionary.cpp hash.cpp 
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ ./a.out 
+Word count in bucket 0 is: 301
+Word count in bucket 1 is: 315
+Word count in bucket 2 is: 316
+Word count in bucket 3 is: 294
+Word count in bucket 4 is: 289
+Word count in bucket 5 is: 288
+Word count in bucket 6 is: 287
+Word count in bucket 7 is: 279
+Word count in bucket 8 is: 273
+Word count in bucket 9 is: 310
+Word count in bucket 10 is: 269
+Word count in bucket 11 is: 260
+Word count in bucket 12 is: 279
+Word count in bucket 13 is: 268
+Word count in bucket 14 is: 293
+Word count in bucket 15 is: 277
+Word count in bucket 16 is: 311
+Word count in bucket 17 is: 283
+Word count in bucket 18 is: 282
+Word count in bucket 19 is: 270
+Word count in bucket 20 is: 295
+Word count in bucket 21 is: 281
+Word count in bucket 22 is: 297
+Word count in bucket 23 is: 299
+Word count in bucket 24 is: 291
+Word count in bucket 25 is: 306
+Word count in bucket 26 is: 303
+Word count in bucket 27 is: 300
+Word count in bucket 28 is: 313
+Word count in bucket 29 is: 281
+Word count in bucket 30 is: 328
+Word count in bucket 31 is: 304
+Word count in bucket 32 is: 271
+Word count in bucket 33 is: 310
+Word count in bucket 34 is: 267
+Word count in bucket 35 is: 282
+Word count in bucket 36 is: 273
+Word count in bucket 37 is: 265
+Word count in bucket 38 is: 296
+Word count in bucket 39 is: 305
+Word count in bucket 40 is: 248
+Word count in bucket 41 is: 326
+Word count in bucket 42 is: 285
+Word count in bucket 43 is: 292
+Word count in bucket 44 is: 295
+Word count in bucket 45 is: 270
+Word count in bucket 46 is: 285
+Word count in bucket 47 is: 297
+Word count in bucket 48 is: 322
+Word count in bucket 49 is: 289
+Word count in bucket 50 is: 295
+Word count in bucket 51 is: 311
+Word count in bucket 52 is: 294
+Word count in bucket 53 is: 306
+Word count in bucket 54 is: 278
+Word count in bucket 55 is: 274
+Word count in bucket 56 is: 308
+Word count in bucket 57 is: 305
+Word count in bucket 58 is: 281
+Word count in bucket 59 is: 296
+Word count in bucket 60 is: 277
+Word count in bucket 61 is: 288
+Word count in bucket 62 is: 299
+Word count in bucket 63 is: 305
+Word count in bucket 64 is: 304
+Word count in bucket 65 is: 291
+Word count in bucket 66 is: 304
+Word count in bucket 67 is: 262
+Word count in bucket 68 is: 282
+Word count in bucket 69 is: 318
+Word count in bucket 70 is: 288
+Word count in bucket 71 is: 285
+Word count in bucket 72 is: 293
+Word count in bucket 73 is: 301
+Word count in bucket 74 is: 276
+Word count in bucket 75 is: 300
+Word count in bucket 76 is: 286
+Word count in bucket 77 is: 305
+Word count in bucket 78 is: 280
+Word count in bucket 79 is: 281
+Word count in bucket 80 is: 312
+Word count in bucket 81 is: 303
+Word count in bucket 82 is: 297
+Word count in bucket 83 is: 298
+Word count in bucket 84 is: 276
+Word count in bucket 85 is: 273
+Word count in bucket 86 is: 288
+Word count in bucket 87 is: 285
+Word count in bucket 88 is: 272
+Word count in bucket 89 is: 295
+Word count in bucket 90 is: 285
+Word count in bucket 91 is: 279
+Word count in bucket 92 is: 286
+Word count in bucket 93 is: 305
+Word count in bucket 94 is: 291
+Word count in bucket 95 is: 280
+Word count in bucket 96 is: 321
+Word count in bucket 97 is: 299
+Word count in bucket 98 is: 267
+Word count in bucket 99 is: 308
+Word count in bucket 100 is: 254
+Bucket 1:
+	  Longest word: philosophicojuristic
+	  Shortest word: wab
+Bucket 30:
+	  Longest word: prerecommendation
+	  Shortest word: yee
+Bucket 69:
+	  Longest word: heterointoxication
+	  Shortest word: vau
+The word |pambanmanche| is located in bucket 55, 125 probes deep!
+The word |Francophilism| is located in bucket 21, 178 probes deep!
+The word |Aani| is located in bucket 17, 283 probes deep!
+The word |Zamicrus| is located in bucket 85, 4 probes deep!
+The word |Sarvarthasiddha| is located in bucket 23, 87 probes deep!
+The word |ligninsulphonate| is located in bucket 86, 152 probes deep!
+The word |ureterolithiasis| is located in bucket 10, 10 probes deep!
+The word |chiasmodontid| is located in bucket 6, 247 probes deep!
+The word |isoquercitrin| is located in bucket 44, 167 probes deep!
+The word |trombony| is located in bucket 14, 48 probes deep!
+The word |JeffDunham| is not in the hash table
+
+The number of empty buckets in the hash table of size 101 is: 0
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ wc -l *.cpp *.h
+  36 dictionary.cpp
+ 237 hash.cpp
+  27 hash.h
+ 300 total
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ exit
+
+Script done on 2019-12-04 04:25:30-0800

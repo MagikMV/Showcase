@@ -1,0 +1,31 @@
+{ "class": "Comparator",
+  "methods" : {
+"compare": ["x", "y"]
+}
+}
+
+{ "class": "Process",
+  "super": ["Runnable"]
+"fields": ["pid", "runnable"]
+  "methods" : {
+"start": []
+"join": []
+"stop": []
+"sleep": ["n"]
+"invoke_run": []
+"set_runnable": ["r"]
+}
+}
+
+{ "class": "Money",
+  "super": ["Error","Object"]
+"fields": ["units"]
+  "methods" : {
+"to_string": []
+"to_right_string": ["w"]
+"get_units": []
+"set_units": ["n"]
+"parse": ["s"]
+}
+}
+

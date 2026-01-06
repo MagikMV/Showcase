@@ -1,0 +1,73 @@
+﻿/* AudioManager.cs
+ * 
+ * Miguel Villanueva
+ * CS 383
+ * April 1, 2021
+ */
+
+using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
+using System;
+
+public class AudioManager : MonoBehaviour
+{
+    public Sound[] sounds;
+    public static AudioManager instance;
+
+    void Awake()
+    {
+        // Singleton pattern here
+        if (instance == null)
+            instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        //DontDestroyOnLoad(gameObject);
+
+        foreach (Sound s in sounds)
+        {
+            s.source = gameObject.AddComponent<AudioSource>();
+            s.source.clip = s.clip;
+            s.source.volume = s.volume;
+            s.source.pitch = s.pitch;
+            s.source.loop = s.loop;
+        }
+        
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        string sceneName = currentScene.name;
+
+        if (sceneName == "MainMenu")
+            Play("Flamenco1");
+        else if (sceneName == "Level 1")
+            Play("Flamenco2");
+        else if (sceneName == "Level 2")
+            Play("Flamenco3");
+        else if (sceneName == "Level 3")
+            Play("Flamenco5");
+        else if (sceneName == "Level 4")
+            Play("Flamenco4");
+        else if (sceneName == "MVOctocatTestScene")
+            Play("Flamenco4");
+        //Play("");        
+    }
+
+    public void Play(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound" + name + "not found!");
+            return;
+        }
+        s.source.Play();
+    }
+}

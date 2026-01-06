@@ -1,0 +1,41 @@
+Script started on 2019-12-04 02:39:28-0800
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ g++ dictionary.cpp hash.cpp [K
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ ./a.out 
+Hash table contents:
+--------------------
+
+  0:    abaptiston
+  0:    Aaru
+  1:    abandonable
+  2:    abaiser
+  2:    abaction
+  3:    abduct
+  4:    abdominocardiac
+  4:    abditive
+  4:    abbreviatory
+  4:    abbot
+  4:    abacay
+  4:    Aani
+  5:    abdominoscopy
+  5:    abdest
+  5:    abbassi
+  5:    abashedly
+  6:    abaze
+  6:    abaton
+  6:    Abassin
+  6:    abased
+Word count in bucket 1 is: 1
+The longest and shortest words in bucket 1 are the same: abandonable
+Word count in bucket 4 is: 6
+The longest word in bucket 4 is abdominocardiac
+The shortest word in bucket 4 is Aani
+The word abbot is located in bucket 4, 4 probes deep!
+The word JeffDunham is not in the hash table
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ wc -l *.cpp *.h
+  41 dictionary.cpp
+ 233 hash.cpp
+  26 hash.h
+ 300 total
+]0;miguel@DESKTOP-0FI4IIA: /mnt/a/Microsoft VS Code/CS121/hash[01;32mmiguel@DESKTOP-0FI4IIA[00m:[01;34m/mnt/a/Microsoft VS Code/CS121/hash[00m$ exit
+
+Script done on 2019-12-04 02:40:06-0800

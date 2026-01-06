@@ -1,0 +1,228 @@
+# mazeGen.icn
+#
+# Miguel Villanueva
+# CS 210
+#
+# Program Description:
+#   Procedurally generates a maze or map, typical to those found in roguelike
+#   games. Maze or map is only representative of what is possible/playable in
+#   a given level and does not feature any gameplay mechanics. 
+# ============================================================================
+
+procedure main()
+    #  Spawn the first room
+    L := list(24, repl(" ", 78))
+    len1 := (?4) + 1                        # Must be at least 2
+    width1 := (?19) + 3                     # Must be at least 4
+    pos_x1 := (?(78 - (width1 + 1))) + 1    # Must be at least L[ ][2]
+    pos_y1 := (?(19 - (len1 + 1))) + 2      # Must be at least L[3][ ]
+    gen(L, len1, width1, pos_y1, pos_x1)
+    #==== Spawn starting point ====#
+    L[pos_y1+(?(len1))][pos_x1+(?(width1-2))] := "<"
+
+    #  Spawn additional rooms
+    rooms := (?5)
+    while (rooms >= 1) do
+    {
+	len := (?4) + 1
+	width := (?19) + 3
+	pos_x := (?(78 - (width + 1))) + 1
+	pos_y := (?(19 - (len + 1))) + 2
+	gen(L , len, width, pos_y, pos_x)
+	rooms -:= 1
+    }
+    #==== Spawn ending point ====#
+    L[pos_y+(?(len))][pos_x+(?(width-2))] := ">"
+
+#    len2 := (?4) + 1
+#    width2 := (?19) + 3
+#    pos_x2 := (?(78 - (width2 + 1))) + 1
+#    pos_y2 := (?(19 - (len2 + 1))) + 2
+#    write("Length: ", len2)
+#    write("Width: ", width2)
+#    write("X: ", pos_x2)
+#    write("Y: ", pos_y2)
+#    gen(L, len2, width2, pos_y2, pos_x2)
+    print(L)
+    #if (L[5][7] == "-") then
+    #    write("Yeet")
+    #else
+    #    write("Yikes")
+    #every i := 1 to 24 do
+    #    every x := find("#", L[i]) do
+    #        write(x)          
+    #x := find("<", L[6])
+    #write(x)
+end
+
+# =========================================
+#  print
+#    Prints the maze, a list of 24 strings
+# =========================================
+procedure print(L)
+    every write(!L)
+end
+
+# ===================================
+#  path
+#    Generates corridors in the maze
+# ===================================
+procedure path(L, y, x)
+    #==== Right ====#	
+    every m := x to 77 do
+    {
+	if(L[y+1][m] == "#") then break
+	else if(L[y-1][m] == "#") then break
+	else if(L[y][m+1] == " ") then
+        {
+	    L[y][m+1] := "#"
+        }
+        #if(L[y][m+1] == c) then
+	else break
+    }
+
+    #==== Left ====#
+    every n := x to 2 by -1 do
+    {
+	if(L[y+1][n] == "#") then break
+	else if(L[y-1][n] == "#") then break
+	else if(L[y][n-1] == " ") then
+	{
+	    L[y][n-1] := "#"
+	}
+	else break
+    }
+    
+    #==== Down ====#
+    every o := y to 23 do
+    {
+	if(L[o+1][x+1] == "#") then 
+	{
+	    if(L[o+1][x] == " ") then
+	    {
+		L[o+1][x] := "#"
+	        break
+	    }
+	    else if(L[o+1][x] == "#") then break
+	    else if(L[o][x+1] == " ") then
+	    {
+		L[o][x+1] := "#"
+		break
+	    }
+	}
+	else if(L[o+1][x-1] == "#") then
+	{
+	    if(L[o+1][x] == " ") then
+	    {
+		L[o+1][x] := "#"
+		break
+	    }
+            else if(L[o+1][x] == "#") then break
+	    else if(L[o][x-1] == " ") then
+	    {
+		L[o][x-1] := "#"
+		break
+	    }
+
+	}
+	else if(L[o+1][x] == " ") then
+	{
+	    L[o+1][x] := "#"
+	}
+	else break
+    }
+
+    #==== Up ====#
+    every p := y to 2 by -1 do
+    {
+        if(L[p-1][x+1] == "#") then
+        {
+            if(L[p-1][x] == " ") then
+            {
+                L[p-1][x] := "#"
+                break
+            }
+            else if(L[p-1][x] == "#") then break
+            else if(L[p][x+1] == " ") then
+            {
+                L[p][x+1] := "#"
+                break
+            }
+        }
+        else if(L[p-1][x-1] == "#") then
+        {
+            if(L[p-1][x] == " ") then
+            {
+                L[p-1][x] := "#"
+                break
+            }
+            else if(L[p-1][x] == "#") then break
+            else if(L[p][x-1] == " ") then
+            {
+                L[p][x-1] := "#"
+                break
+            }
+
+        }
+        else if(L[p-1][x] == " ") then
+        {
+            L[p-1][x] := "#"
+        }
+        else break
+    }
+end
+
+# ===============================
+#  gen
+#    Generates rooms in the maze
+# ===============================
+procedure gen(L, len, w, y, x)
+    #==== Spawn room ====#
+    L[y][x:(x+w)] := repl("-", w)
+    every j := 1 to len do
+    {
+        L[y+j][x] := "|"
+        L[y+j][(x+1):(x+w-1)] := repl(".", w-2) 
+        L[y+j][x+w-1] := "|"
+    }
+    L[y+len+1][x:(x+w)] := repl ("-", w)
+
+    #==== Spawn door ====#
+    nWall := y
+    sWall := y + len + 1
+    wWall := x
+    eWall := x + w - 1
+    wall := ?["north", "south", "east", "west"]
+    if wall == ("north" | "south") then
+    {
+	door := x+(?(w-2))
+	if wall == "north" then
+        {
+	    L[nWall][door] := "+"
+            L[nWall-1][door] := "#"
+	    path(L, nWall-1, door)
+        }
+        else
+        {
+	    L[sWall][door] := "+"
+	    L[sWall+1][door] := "#"
+	    path(L, sWall+1, door)
+        }
+    }
+    else
+    {
+	door:= y+(?(len))
+	if wall == "west" then
+        {
+	    L[door][wWall] := "+"
+	    L[door][wWall-1] := "#"
+	    path(L, door, wWall-1)
+        }
+	else
+	{
+	    L[door][eWall] := "+"
+	    L[door][eWall+1] := "#"
+	    path(L, door, eWall+1) 
+	}
+    }  
+end

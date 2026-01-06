@@ -1,0 +1,2618 @@
+Terminals unused in grammar
+
+   CHSIGN
+   SIZEOF
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: declList
+
+    2 declList: declList decl
+    3         | decl
+
+    4 decl: varDecl
+    5     | funDecl
+
+    6 varDecl: typeSpec varDeclList ';'
+
+    7 scopedVarDecl: STATIC typeSpec varDeclList ';'
+    8              | typeSpec varDeclList ';'
+
+    9 varDeclList: varDeclList ',' varDeclInit
+   10            | varDeclInit
+
+   11 varDeclInit: varDeclId
+   12            | varDeclId ':' simpleExp
+
+   13 varDeclId: ID
+   14          | ID '[' NUMCONST ']'
+
+   15 typeSpec: INT
+   16         | BOOL
+   17         | CHAR
+
+   18 funDecl: typeSpec ID '(' parms ')' stmt
+   19        | ID '(' parms ')' stmt
+
+   20 parms: parmList
+   21      | %empty
+
+   22 parmList: parmList ';' parmTypeList
+   23         | parmTypeList
+
+   24 parmTypeList: typeSpec parmIdList
+
+   25 parmIdList: parmIdList ',' parmId
+   26           | parmId
+
+   27 parmId: ID
+   28       | ID '[' ']'
+
+   29 stmt: matched
+   30     | unmatched
+
+   31 matched: IF simpleExp THEN matched ELSE matched
+   32        | WHILE simpleExp DO matched
+   33        | FOR ID '=' iterRange DO matched
+   34        | otherStmts
+
+   35 unmatched: IF simpleExp THEN matched
+   36          | IF simpleExp THEN unmatched
+   37          | IF simpleExp THEN matched ELSE unmatched
+   38          | WHILE simpleExp DO unmatched
+   39          | FOR ID '=' iterRange DO unmatched
+
+   40 otherStmts: expStmt
+   41           | compoundStmt
+   42           | returnStmt
+   43           | breakStmt
+
+   44 expStmt: exp ';'
+   45        | ';'
+
+   46 compoundStmt: '{' localDecls stmtList '}'
+
+   47 localDecls: localDecls scopedVarDecl
+   48           | %empty
+
+   49 stmtList: stmtList stmt
+   50         | %empty
+
+   51 iterRange: simpleExp TO simpleExp
+   52          | simpleExp TO simpleExp BY simpleExp
+
+   53 returnStmt: RETURN ';'
+   54           | RETURN exp ';'
+
+   55 breakStmt: BREAK ';'
+
+   56 exp: mutable '=' exp
+   57    | mutable ADDASS exp
+   58    | mutable SUBASS exp
+   59    | mutable MULASS exp
+   60    | mutable DIVASS exp
+   61    | mutable INC
+   62    | mutable DEC
+   63    | simpleExp
+
+   64 simpleExp: simpleExp OR andExp
+   65          | andExp
+
+   66 andExp: andExp AND unaryRelExp
+   67       | unaryRelExp
+
+   68 unaryRelExp: NOT unaryRelExp
+   69            | relExp
+
+   70 relExp: minmaxExp relop minmaxExp
+   71       | minmaxExp
+
+   72 relop: LEQ
+   73      | '<'
+   74      | '>'
+   75      | GEQ
+   76      | EQ
+   77      | NEQ
+
+   78 minmaxExp: minmaxExp minmaxop sumExp
+   79          | sumExp
+
+   80 minmaxop: MAX
+   81         | MIN
+
+   82 sumExp: sumExp sumop mulExp
+   83       | mulExp
+
+   84 sumop: '+'
+   85      | '-'
+
+   86 mulExp: mulExp mulop unaryExp
+   87       | unaryExp
+
+   88 mulop: '*'
+   89      | '/'
+   90      | '%'
+
+   91 unaryExp: unaryop unaryExp
+   92         | factor
+
+   93 unaryop: '-'
+   94        | '*'
+   95        | '?'
+
+   96 factor: immutable
+   97       | mutable
+
+   98 mutable: ID
+   99        | ID '[' exp ']'
+
+  100 immutable: '(' exp ')'
+  101          | call
+  102          | constant
+
+  103 call: ID '(' args ')'
+
+  104 args: argList
+  105     | %empty
+
+  106 argList: argList ',' exp
+  107        | exp
+
+  108 constant: NUMCONST
+  109         | CHARCONST
+  110         | STRINGCONST
+  111         | BOOLCONST
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'%' (37) 90
+'(' (40) 18 19 100 103
+')' (41) 18 19 100 103
+'*' (42) 88 94
+'+' (43) 84
+',' (44) 9 25 106
+'-' (45) 85 93
+'/' (47) 89
+':' (58) 12
+';' (59) 6 7 8 22 44 45 53 54 55
+'<' (60) 73
+'=' (61) 33 39 56
+'>' (62) 74
+'?' (63) 95
+'[' (91) 14 28 99
+']' (93) 14 28 99
+'{' (123) 46
+'}' (125) 46
+error (256)
+ADDASS (258) 57
+ID (259) 13 14 18 19 27 28 33 39 98 99 103
+INT (260) 15
+NUMCONST (261) 14 108
+IF (262) 31 35 36 37
+EQ (263) 76
+RETURN (264) 53 54
+STRINGCONST (265) 110
+THEN (266) 31 35 36 37
+ELSE (267) 31 37
+DEC (268) 62
+CHARCONST (269) 109
+BOOL (270) 16
+CHAR (271) 17
+STATIC (272) 7
+AND (273) 66
+OR (274) 64
+NOT (275) 68
+BOOLCONST (276) 111
+FOR (277) 33 39
+TO (278) 51 52
+BY (279) 52
+DO (280) 32 33 38 39
+BREAK (281) 55
+WHILE (282) 32 38
+INC (283) 61
+MIN (284) 81
+MAX (285) 80
+GEQ (286) 75
+LEQ (287) 72
+NEQ (288) 77
+SUBASS (289) 58
+MULASS (290) 59
+DIVASS (291) 60
+CHSIGN (292)
+SIZEOF (293)
+
+
+Nonterminals, with rules where they appear
+
+$accept (57)
+    on left: 0
+program (58)
+    on left: 1, on right: 0
+declList (59)
+    on left: 2 3, on right: 1 2
+decl (60)
+    on left: 4 5, on right: 2 3
+varDecl (61)
+    on left: 6, on right: 4
+scopedVarDecl (62)
+    on left: 7 8, on right: 47
+varDeclList (63)
+    on left: 9 10, on right: 6 7 8 9
+varDeclInit (64)
+    on left: 11 12, on right: 9 10
+varDeclId (65)
+    on left: 13 14, on right: 11 12
+typeSpec (66)
+    on left: 15 16 17, on right: 6 7 8 18 24
+funDecl (67)
+    on left: 18 19, on right: 5
+parms (68)
+    on left: 20 21, on right: 18 19
+parmList (69)
+    on left: 22 23, on right: 20 22
+parmTypeList (70)
+    on left: 24, on right: 22 23
+parmIdList (71)
+    on left: 25 26, on right: 24 25
+parmId (72)
+    on left: 27 28, on right: 25 26
+stmt (73)
+    on left: 29 30, on right: 18 19 49
+matched (74)
+    on left: 31 32 33 34, on right: 29 31 32 33 35 37
+unmatched (75)
+    on left: 35 36 37 38 39, on right: 30 36 37 38 39
+otherStmts (76)
+    on left: 40 41 42 43, on right: 34
+expStmt (77)
+    on left: 44 45, on right: 40
+compoundStmt (78)
+    on left: 46, on right: 41
+localDecls (79)
+    on left: 47 48, on right: 46 47
+stmtList (80)
+    on left: 49 50, on right: 46 49
+iterRange (81)
+    on left: 51 52, on right: 33 39
+returnStmt (82)
+    on left: 53 54, on right: 42
+breakStmt (83)
+    on left: 55, on right: 43
+exp (84)
+    on left: 56 57 58 59 60 61 62 63, on right: 44 54 56 57 58 59 60
+    99 100 106 107
+simpleExp (85)
+    on left: 64 65, on right: 12 31 32 35 36 37 38 51 52 63 64
+andExp (86)
+    on left: 66 67, on right: 64 65 66
+unaryRelExp (87)
+    on left: 68 69, on right: 66 67 68
+relExp (88)
+    on left: 70 71, on right: 69
+relop (89)
+    on left: 72 73 74 75 76 77, on right: 70
+minmaxExp (90)
+    on left: 78 79, on right: 70 71 78
+minmaxop (91)
+    on left: 80 81, on right: 78
+sumExp (92)
+    on left: 82 83, on right: 78 79 82
+sumop (93)
+    on left: 84 85, on right: 82
+mulExp (94)
+    on left: 86 87, on right: 82 83 86
+mulop (95)
+    on left: 88 89 90, on right: 86
+unaryExp (96)
+    on left: 91 92, on right: 86 87 91
+unaryop (97)
+    on left: 93 94 95, on right: 91
+factor (98)
+    on left: 96 97, on right: 92
+mutable (99)
+    on left: 98 99, on right: 56 57 58 59 60 61 62 97
+immutable (100)
+    on left: 100 101 102, on right: 96
+call (101)
+    on left: 103, on right: 101
+args (102)
+    on left: 104 105, on right: 103
+argList (103)
+    on left: 106 107, on right: 104 106
+constant (104)
+    on left: 108 109 110 111, on right: 102
+
+
+State 0
+
+    0 $accept: . program $end
+
+    ID    shift, and go to state 1
+    INT   shift, and go to state 2
+    BOOL  shift, and go to state 3
+    CHAR  shift, and go to state 4
+
+    program   go to state 5
+    declList  go to state 6
+    decl      go to state 7
+    varDecl   go to state 8
+    typeSpec  go to state 9
+    funDecl   go to state 10
+
+
+State 1
+
+   19 funDecl: ID . '(' parms ')' stmt
+
+    '('  shift, and go to state 11
+
+
+State 2
+
+   15 typeSpec: INT .
+
+    $default  reduce using rule 15 (typeSpec)
+
+
+State 3
+
+   16 typeSpec: BOOL .
+
+    $default  reduce using rule 16 (typeSpec)
+
+
+State 4
+
+   17 typeSpec: CHAR .
+
+    $default  reduce using rule 17 (typeSpec)
+
+
+State 5
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 12
+
+
+State 6
+
+    1 program: declList .
+    2 declList: declList . decl
+
+    ID    shift, and go to state 1
+    INT   shift, and go to state 2
+    BOOL  shift, and go to state 3
+    CHAR  shift, and go to state 4
+
+    $default  reduce using rule 1 (program)
+
+    decl      go to state 13
+    varDecl   go to state 8
+    typeSpec  go to state 9
+    funDecl   go to state 10
+
+
+State 7
+
+    3 declList: decl .
+
+    $default  reduce using rule 3 (declList)
+
+
+State 8
+
+    4 decl: varDecl .
+
+    $default  reduce using rule 4 (decl)
+
+
+State 9
+
+    6 varDecl: typeSpec . varDeclList ';'
+   18 funDecl: typeSpec . ID '(' parms ')' stmt
+
+    ID  shift, and go to state 14
+
+    varDeclList  go to state 15
+    varDeclInit  go to state 16
+    varDeclId    go to state 17
+
+
+State 10
+
+    5 decl: funDecl .
+
+    $default  reduce using rule 5 (decl)
+
+
+State 11
+
+   19 funDecl: ID '(' . parms ')' stmt
+
+    INT   shift, and go to state 2
+    BOOL  shift, and go to state 3
+    CHAR  shift, and go to state 4
+
+    $default  reduce using rule 21 (parms)
+
+    typeSpec      go to state 18
+    parms         go to state 19
+    parmList      go to state 20
+    parmTypeList  go to state 21
+
+
+State 12
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 13
+
+    2 declList: declList decl .
+
+    $default  reduce using rule 2 (declList)
+
+
+State 14
+
+   13 varDeclId: ID .
+   14          | ID . '[' NUMCONST ']'
+   18 funDecl: typeSpec ID . '(' parms ')' stmt
+
+    '('  shift, and go to state 22
+    '['  shift, and go to state 23
+
+    $default  reduce using rule 13 (varDeclId)
+
+
+State 15
+
+    6 varDecl: typeSpec varDeclList . ';'
+    9 varDeclList: varDeclList . ',' varDeclInit
+
+    ';'  shift, and go to state 24
+    ','  shift, and go to state 25
+
+
+State 16
+
+   10 varDeclList: varDeclInit .
+
+    $default  reduce using rule 10 (varDeclList)
+
+
+State 17
+
+   11 varDeclInit: varDeclId .
+   12            | varDeclId . ':' simpleExp
+
+    ':'  shift, and go to state 26
+
+    $default  reduce using rule 11 (varDeclInit)
+
+
+State 18
+
+   24 parmTypeList: typeSpec . parmIdList
+
+    ID  shift, and go to state 27
+
+    parmIdList  go to state 28
+    parmId      go to state 29
+
+
+State 19
+
+   19 funDecl: ID '(' parms . ')' stmt
+
+    ')'  shift, and go to state 30
+
+
+State 20
+
+   20 parms: parmList .
+   22 parmList: parmList . ';' parmTypeList
+
+    ';'  shift, and go to state 31
+
+    $default  reduce using rule 20 (parms)
+
+
+State 21
+
+   23 parmList: parmTypeList .
+
+    $default  reduce using rule 23 (parmList)
+
+
+State 22
+
+   18 funDecl: typeSpec ID '(' . parms ')' stmt
+
+    INT   shift, and go to state 2
+    BOOL  shift, and go to state 3
+    CHAR  shift, and go to state 4
+
+    $default  reduce using rule 21 (parms)
+
+    typeSpec      go to state 18
+    parms         go to state 32
+    parmList      go to state 20
+    parmTypeList  go to state 21
+
+
+State 23
+
+   14 varDeclId: ID '[' . NUMCONST ']'
+
+    NUMCONST  shift, and go to state 33
+
+
+State 24
+
+    6 varDecl: typeSpec varDeclList ';' .
+
+    $default  reduce using rule 6 (varDecl)
+
+
+State 25
+
+    9 varDeclList: varDeclList ',' . varDeclInit
+
+    ID  shift, and go to state 34
+
+    varDeclInit  go to state 35
+    varDeclId    go to state 17
+
+
+State 26
+
+   12 varDeclInit: varDeclId ':' . simpleExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    simpleExp    go to state 46
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 27
+
+   27 parmId: ID .
+   28       | ID . '[' ']'
+
+    '['  shift, and go to state 60
+
+    $default  reduce using rule 27 (parmId)
+
+
+State 28
+
+   24 parmTypeList: typeSpec parmIdList .
+   25 parmIdList: parmIdList . ',' parmId
+
+    ','  shift, and go to state 61
+
+    $default  reduce using rule 24 (parmTypeList)
+
+
+State 29
+
+   26 parmIdList: parmId .
+
+    $default  reduce using rule 26 (parmIdList)
+
+
+State 30
+
+   19 funDecl: ID '(' parms ')' . stmt
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '{'          shift, and go to state 62
+    ';'          shift, and go to state 63
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    IF           shift, and go to state 64
+    RETURN       shift, and go to state 65
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+    FOR          shift, and go to state 66
+    BREAK        shift, and go to state 67
+    WHILE        shift, and go to state 68
+
+    stmt          go to state 69
+    matched       go to state 70
+    unmatched     go to state 71
+    otherStmts    go to state 72
+    expStmt       go to state 73
+    compoundStmt  go to state 74
+    returnStmt    go to state 75
+    breakStmt     go to state 76
+    exp           go to state 77
+    simpleExp     go to state 78
+    andExp        go to state 47
+    unaryRelExp   go to state 48
+    relExp        go to state 49
+    minmaxExp     go to state 50
+    sumExp        go to state 51
+    mulExp        go to state 52
+    unaryExp      go to state 53
+    unaryop       go to state 54
+    factor        go to state 55
+    mutable       go to state 79
+    immutable     go to state 57
+    call          go to state 58
+    constant      go to state 59
+
+
+State 31
+
+   22 parmList: parmList ';' . parmTypeList
+
+    INT   shift, and go to state 2
+    BOOL  shift, and go to state 3
+    CHAR  shift, and go to state 4
+
+    typeSpec      go to state 18
+    parmTypeList  go to state 80
+
+
+State 32
+
+   18 funDecl: typeSpec ID '(' parms . ')' stmt
+
+    ')'  shift, and go to state 81
+
+
+State 33
+
+   14 varDeclId: ID '[' NUMCONST . ']'
+
+    ']'  shift, and go to state 82
+
+
+State 34
+
+   13 varDeclId: ID .
+   14          | ID . '[' NUMCONST ']'
+
+    '['  shift, and go to state 23
+
+    $default  reduce using rule 13 (varDeclId)
+
+
+State 35
+
+    9 varDeclList: varDeclList ',' varDeclInit .
+
+    $default  reduce using rule 9 (varDeclList)
+
+
+State 36
+
+   94 unaryop: '*' .
+
+    $default  reduce using rule 94 (unaryop)
+
+
+State 37
+
+  100 immutable: '(' . exp ')'
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 83
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 38
+
+   93 unaryop: '-' .
+
+    $default  reduce using rule 93 (unaryop)
+
+
+State 39
+
+   95 unaryop: '?' .
+
+    $default  reduce using rule 95 (unaryop)
+
+
+State 40
+
+   98 mutable: ID .
+   99        | ID . '[' exp ']'
+  103 call: ID . '(' args ')'
+
+    '('  shift, and go to state 84
+    '['  shift, and go to state 85
+
+    $default  reduce using rule 98 (mutable)
+
+
+State 41
+
+  108 constant: NUMCONST .
+
+    $default  reduce using rule 108 (constant)
+
+
+State 42
+
+  110 constant: STRINGCONST .
+
+    $default  reduce using rule 110 (constant)
+
+
+State 43
+
+  109 constant: CHARCONST .
+
+    $default  reduce using rule 109 (constant)
+
+
+State 44
+
+   68 unaryRelExp: NOT . unaryRelExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    unaryRelExp  go to state 86
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 45
+
+  111 constant: BOOLCONST .
+
+    $default  reduce using rule 111 (constant)
+
+
+State 46
+
+   12 varDeclInit: varDeclId ':' simpleExp .
+   64 simpleExp: simpleExp . OR andExp
+
+    OR  shift, and go to state 87
+
+    $default  reduce using rule 12 (varDeclInit)
+
+
+State 47
+
+   65 simpleExp: andExp .
+   66 andExp: andExp . AND unaryRelExp
+
+    AND  shift, and go to state 88
+
+    $default  reduce using rule 65 (simpleExp)
+
+
+State 48
+
+   67 andExp: unaryRelExp .
+
+    $default  reduce using rule 67 (andExp)
+
+
+State 49
+
+   69 unaryRelExp: relExp .
+
+    $default  reduce using rule 69 (unaryRelExp)
+
+
+State 50
+
+   70 relExp: minmaxExp . relop minmaxExp
+   71       | minmaxExp .
+   78 minmaxExp: minmaxExp . minmaxop sumExp
+
+    '<'  shift, and go to state 89
+    '>'  shift, and go to state 90
+    EQ   shift, and go to state 91
+    MIN  shift, and go to state 92
+    MAX  shift, and go to state 93
+    GEQ  shift, and go to state 94
+    LEQ  shift, and go to state 95
+    NEQ  shift, and go to state 96
+
+    $default  reduce using rule 71 (relExp)
+
+    relop     go to state 97
+    minmaxop  go to state 98
+
+
+State 51
+
+   79 minmaxExp: sumExp .
+   82 sumExp: sumExp . sumop mulExp
+
+    '-'  shift, and go to state 99
+    '+'  shift, and go to state 100
+
+    $default  reduce using rule 79 (minmaxExp)
+
+    sumop  go to state 101
+
+
+State 52
+
+   83 sumExp: mulExp .
+   86 mulExp: mulExp . mulop unaryExp
+
+    '%'  shift, and go to state 102
+    '*'  shift, and go to state 103
+    '/'  shift, and go to state 104
+
+    $default  reduce using rule 83 (sumExp)
+
+    mulop  go to state 105
+
+
+State 53
+
+   87 mulExp: unaryExp .
+
+    $default  reduce using rule 87 (mulExp)
+
+
+State 54
+
+   91 unaryExp: unaryop . unaryExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    BOOLCONST    shift, and go to state 45
+
+    unaryExp   go to state 106
+    unaryop    go to state 54
+    factor     go to state 55
+    mutable    go to state 56
+    immutable  go to state 57
+    call       go to state 58
+    constant   go to state 59
+
+
+State 55
+
+   92 unaryExp: factor .
+
+    $default  reduce using rule 92 (unaryExp)
+
+
+State 56
+
+   97 factor: mutable .
+
+    $default  reduce using rule 97 (factor)
+
+
+State 57
+
+   96 factor: immutable .
+
+    $default  reduce using rule 96 (factor)
+
+
+State 58
+
+  101 immutable: call .
+
+    $default  reduce using rule 101 (immutable)
+
+
+State 59
+
+  102 immutable: constant .
+
+    $default  reduce using rule 102 (immutable)
+
+
+State 60
+
+   28 parmId: ID '[' . ']'
+
+    ']'  shift, and go to state 107
+
+
+State 61
+
+   25 parmIdList: parmIdList ',' . parmId
+
+    ID  shift, and go to state 27
+
+    parmId  go to state 108
+
+
+State 62
+
+   46 compoundStmt: '{' . localDecls stmtList '}'
+
+    $default  reduce using rule 48 (localDecls)
+
+    localDecls  go to state 109
+
+
+State 63
+
+   45 expStmt: ';' .
+
+    $default  reduce using rule 45 (expStmt)
+
+
+State 64
+
+   31 matched: IF . simpleExp THEN matched ELSE matched
+   35 unmatched: IF . simpleExp THEN matched
+   36          | IF . simpleExp THEN unmatched
+   37          | IF . simpleExp THEN matched ELSE unmatched
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    simpleExp    go to state 110
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 65
+
+   53 returnStmt: RETURN . ';'
+   54           | RETURN . exp ';'
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    ';'          shift, and go to state 111
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 112
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 66
+
+   33 matched: FOR . ID '=' iterRange DO matched
+   39 unmatched: FOR . ID '=' iterRange DO unmatched
+
+    ID  shift, and go to state 113
+
+
+State 67
+
+   55 breakStmt: BREAK . ';'
+
+    ';'  shift, and go to state 114
+
+
+State 68
+
+   32 matched: WHILE . simpleExp DO matched
+   38 unmatched: WHILE . simpleExp DO unmatched
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    simpleExp    go to state 115
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 69
+
+   19 funDecl: ID '(' parms ')' stmt .
+
+    $default  reduce using rule 19 (funDecl)
+
+
+State 70
+
+   29 stmt: matched .
+
+    $default  reduce using rule 29 (stmt)
+
+
+State 71
+
+   30 stmt: unmatched .
+
+    $default  reduce using rule 30 (stmt)
+
+
+State 72
+
+   34 matched: otherStmts .
+
+    $default  reduce using rule 34 (matched)
+
+
+State 73
+
+   40 otherStmts: expStmt .
+
+    $default  reduce using rule 40 (otherStmts)
+
+
+State 74
+
+   41 otherStmts: compoundStmt .
+
+    $default  reduce using rule 41 (otherStmts)
+
+
+State 75
+
+   42 otherStmts: returnStmt .
+
+    $default  reduce using rule 42 (otherStmts)
+
+
+State 76
+
+   43 otherStmts: breakStmt .
+
+    $default  reduce using rule 43 (otherStmts)
+
+
+State 77
+
+   44 expStmt: exp . ';'
+
+    ';'  shift, and go to state 116
+
+
+State 78
+
+   63 exp: simpleExp .
+   64 simpleExp: simpleExp . OR andExp
+
+    OR  shift, and go to state 87
+
+    $default  reduce using rule 63 (exp)
+
+
+State 79
+
+   56 exp: mutable . '=' exp
+   57    | mutable . ADDASS exp
+   58    | mutable . SUBASS exp
+   59    | mutable . MULASS exp
+   60    | mutable . DIVASS exp
+   61    | mutable . INC
+   62    | mutable . DEC
+   97 factor: mutable .
+
+    '='     shift, and go to state 117
+    ADDASS  shift, and go to state 118
+    DEC     shift, and go to state 119
+    INC     shift, and go to state 120
+    SUBASS  shift, and go to state 121
+    MULASS  shift, and go to state 122
+    DIVASS  shift, and go to state 123
+
+    $default  reduce using rule 97 (factor)
+
+
+State 80
+
+   22 parmList: parmList ';' parmTypeList .
+
+    $default  reduce using rule 22 (parmList)
+
+
+State 81
+
+   18 funDecl: typeSpec ID '(' parms ')' . stmt
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '{'          shift, and go to state 62
+    ';'          shift, and go to state 63
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    IF           shift, and go to state 64
+    RETURN       shift, and go to state 65
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+    FOR          shift, and go to state 66
+    BREAK        shift, and go to state 67
+    WHILE        shift, and go to state 68
+
+    stmt          go to state 124
+    matched       go to state 70
+    unmatched     go to state 71
+    otherStmts    go to state 72
+    expStmt       go to state 73
+    compoundStmt  go to state 74
+    returnStmt    go to state 75
+    breakStmt     go to state 76
+    exp           go to state 77
+    simpleExp     go to state 78
+    andExp        go to state 47
+    unaryRelExp   go to state 48
+    relExp        go to state 49
+    minmaxExp     go to state 50
+    sumExp        go to state 51
+    mulExp        go to state 52
+    unaryExp      go to state 53
+    unaryop       go to state 54
+    factor        go to state 55
+    mutable       go to state 79
+    immutable     go to state 57
+    call          go to state 58
+    constant      go to state 59
+
+
+State 82
+
+   14 varDeclId: ID '[' NUMCONST ']' .
+
+    $default  reduce using rule 14 (varDeclId)
+
+
+State 83
+
+  100 immutable: '(' exp . ')'
+
+    ')'  shift, and go to state 125
+
+
+State 84
+
+  103 call: ID '(' . args ')'
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    $default  reduce using rule 105 (args)
+
+    exp          go to state 126
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    args         go to state 127
+    argList      go to state 128
+    constant     go to state 59
+
+
+State 85
+
+   99 mutable: ID '[' . exp ']'
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 129
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 86
+
+   68 unaryRelExp: NOT unaryRelExp .
+
+    $default  reduce using rule 68 (unaryRelExp)
+
+
+State 87
+
+   64 simpleExp: simpleExp OR . andExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    andExp       go to state 130
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 88
+
+   66 andExp: andExp AND . unaryRelExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    unaryRelExp  go to state 131
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 89
+
+   73 relop: '<' .
+
+    $default  reduce using rule 73 (relop)
+
+
+State 90
+
+   74 relop: '>' .
+
+    $default  reduce using rule 74 (relop)
+
+
+State 91
+
+   76 relop: EQ .
+
+    $default  reduce using rule 76 (relop)
+
+
+State 92
+
+   81 minmaxop: MIN .
+
+    $default  reduce using rule 81 (minmaxop)
+
+
+State 93
+
+   80 minmaxop: MAX .
+
+    $default  reduce using rule 80 (minmaxop)
+
+
+State 94
+
+   75 relop: GEQ .
+
+    $default  reduce using rule 75 (relop)
+
+
+State 95
+
+   72 relop: LEQ .
+
+    $default  reduce using rule 72 (relop)
+
+
+State 96
+
+   77 relop: NEQ .
+
+    $default  reduce using rule 77 (relop)
+
+
+State 97
+
+   70 relExp: minmaxExp relop . minmaxExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    BOOLCONST    shift, and go to state 45
+
+    minmaxExp  go to state 132
+    sumExp     go to state 51
+    mulExp     go to state 52
+    unaryExp   go to state 53
+    unaryop    go to state 54
+    factor     go to state 55
+    mutable    go to state 56
+    immutable  go to state 57
+    call       go to state 58
+    constant   go to state 59
+
+
+State 98
+
+   78 minmaxExp: minmaxExp minmaxop . sumExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    BOOLCONST    shift, and go to state 45
+
+    sumExp     go to state 133
+    mulExp     go to state 52
+    unaryExp   go to state 53
+    unaryop    go to state 54
+    factor     go to state 55
+    mutable    go to state 56
+    immutable  go to state 57
+    call       go to state 58
+    constant   go to state 59
+
+
+State 99
+
+   85 sumop: '-' .
+
+    $default  reduce using rule 85 (sumop)
+
+
+State 100
+
+   84 sumop: '+' .
+
+    $default  reduce using rule 84 (sumop)
+
+
+State 101
+
+   82 sumExp: sumExp sumop . mulExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    BOOLCONST    shift, and go to state 45
+
+    mulExp     go to state 134
+    unaryExp   go to state 53
+    unaryop    go to state 54
+    factor     go to state 55
+    mutable    go to state 56
+    immutable  go to state 57
+    call       go to state 58
+    constant   go to state 59
+
+
+State 102
+
+   90 mulop: '%' .
+
+    $default  reduce using rule 90 (mulop)
+
+
+State 103
+
+   88 mulop: '*' .
+
+    $default  reduce using rule 88 (mulop)
+
+
+State 104
+
+   89 mulop: '/' .
+
+    $default  reduce using rule 89 (mulop)
+
+
+State 105
+
+   86 mulExp: mulExp mulop . unaryExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    BOOLCONST    shift, and go to state 45
+
+    unaryExp   go to state 135
+    unaryop    go to state 54
+    factor     go to state 55
+    mutable    go to state 56
+    immutable  go to state 57
+    call       go to state 58
+    constant   go to state 59
+
+
+State 106
+
+   91 unaryExp: unaryop unaryExp .
+
+    $default  reduce using rule 91 (unaryExp)
+
+
+State 107
+
+   28 parmId: ID '[' ']' .
+
+    $default  reduce using rule 28 (parmId)
+
+
+State 108
+
+   25 parmIdList: parmIdList ',' parmId .
+
+    $default  reduce using rule 25 (parmIdList)
+
+
+State 109
+
+   46 compoundStmt: '{' localDecls . stmtList '}'
+   47 localDecls: localDecls . scopedVarDecl
+
+    INT     shift, and go to state 2
+    BOOL    shift, and go to state 3
+    CHAR    shift, and go to state 4
+    STATIC  shift, and go to state 136
+
+    $default  reduce using rule 50 (stmtList)
+
+    scopedVarDecl  go to state 137
+    typeSpec       go to state 138
+    stmtList       go to state 139
+
+
+State 110
+
+   31 matched: IF simpleExp . THEN matched ELSE matched
+   35 unmatched: IF simpleExp . THEN matched
+   36          | IF simpleExp . THEN unmatched
+   37          | IF simpleExp . THEN matched ELSE unmatched
+   64 simpleExp: simpleExp . OR andExp
+
+    THEN  shift, and go to state 140
+    OR    shift, and go to state 87
+
+
+State 111
+
+   53 returnStmt: RETURN ';' .
+
+    $default  reduce using rule 53 (returnStmt)
+
+
+State 112
+
+   54 returnStmt: RETURN exp . ';'
+
+    ';'  shift, and go to state 141
+
+
+State 113
+
+   33 matched: FOR ID . '=' iterRange DO matched
+   39 unmatched: FOR ID . '=' iterRange DO unmatched
+
+    '='  shift, and go to state 142
+
+
+State 114
+
+   55 breakStmt: BREAK ';' .
+
+    $default  reduce using rule 55 (breakStmt)
+
+
+State 115
+
+   32 matched: WHILE simpleExp . DO matched
+   38 unmatched: WHILE simpleExp . DO unmatched
+   64 simpleExp: simpleExp . OR andExp
+
+    OR  shift, and go to state 87
+    DO  shift, and go to state 143
+
+
+State 116
+
+   44 expStmt: exp ';' .
+
+    $default  reduce using rule 44 (expStmt)
+
+
+State 117
+
+   56 exp: mutable '=' . exp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 144
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 118
+
+   57 exp: mutable ADDASS . exp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 145
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 119
+
+   62 exp: mutable DEC .
+
+    $default  reduce using rule 62 (exp)
+
+
+State 120
+
+   61 exp: mutable INC .
+
+    $default  reduce using rule 61 (exp)
+
+
+State 121
+
+   58 exp: mutable SUBASS . exp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 146
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 122
+
+   59 exp: mutable MULASS . exp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 147
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 123
+
+   60 exp: mutable DIVASS . exp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 148
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 124
+
+   18 funDecl: typeSpec ID '(' parms ')' stmt .
+
+    $default  reduce using rule 18 (funDecl)
+
+
+State 125
+
+  100 immutable: '(' exp ')' .
+
+    $default  reduce using rule 100 (immutable)
+
+
+State 126
+
+  107 argList: exp .
+
+    $default  reduce using rule 107 (argList)
+
+
+State 127
+
+  103 call: ID '(' args . ')'
+
+    ')'  shift, and go to state 149
+
+
+State 128
+
+  104 args: argList .
+  106 argList: argList . ',' exp
+
+    ','  shift, and go to state 150
+
+    $default  reduce using rule 104 (args)
+
+
+State 129
+
+   99 mutable: ID '[' exp . ']'
+
+    ']'  shift, and go to state 151
+
+
+State 130
+
+   64 simpleExp: simpleExp OR andExp .
+   66 andExp: andExp . AND unaryRelExp
+
+    AND  shift, and go to state 88
+
+    $default  reduce using rule 64 (simpleExp)
+
+
+State 131
+
+   66 andExp: andExp AND unaryRelExp .
+
+    $default  reduce using rule 66 (andExp)
+
+
+State 132
+
+   70 relExp: minmaxExp relop minmaxExp .
+   78 minmaxExp: minmaxExp . minmaxop sumExp
+
+    MIN  shift, and go to state 92
+    MAX  shift, and go to state 93
+
+    $default  reduce using rule 70 (relExp)
+
+    minmaxop  go to state 98
+
+
+State 133
+
+   78 minmaxExp: minmaxExp minmaxop sumExp .
+   82 sumExp: sumExp . sumop mulExp
+
+    '-'  shift, and go to state 99
+    '+'  shift, and go to state 100
+
+    $default  reduce using rule 78 (minmaxExp)
+
+    sumop  go to state 101
+
+
+State 134
+
+   82 sumExp: sumExp sumop mulExp .
+   86 mulExp: mulExp . mulop unaryExp
+
+    '%'  shift, and go to state 102
+    '*'  shift, and go to state 103
+    '/'  shift, and go to state 104
+
+    $default  reduce using rule 82 (sumExp)
+
+    mulop  go to state 105
+
+
+State 135
+
+   86 mulExp: mulExp mulop unaryExp .
+
+    $default  reduce using rule 86 (mulExp)
+
+
+State 136
+
+    7 scopedVarDecl: STATIC . typeSpec varDeclList ';'
+
+    INT   shift, and go to state 2
+    BOOL  shift, and go to state 3
+    CHAR  shift, and go to state 4
+
+    typeSpec  go to state 152
+
+
+State 137
+
+   47 localDecls: localDecls scopedVarDecl .
+
+    $default  reduce using rule 47 (localDecls)
+
+
+State 138
+
+    8 scopedVarDecl: typeSpec . varDeclList ';'
+
+    ID  shift, and go to state 34
+
+    varDeclList  go to state 153
+    varDeclInit  go to state 16
+    varDeclId    go to state 17
+
+
+State 139
+
+   46 compoundStmt: '{' localDecls stmtList . '}'
+   49 stmtList: stmtList . stmt
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '{'          shift, and go to state 62
+    '}'          shift, and go to state 154
+    ';'          shift, and go to state 63
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    IF           shift, and go to state 64
+    RETURN       shift, and go to state 65
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+    FOR          shift, and go to state 66
+    BREAK        shift, and go to state 67
+    WHILE        shift, and go to state 68
+
+    stmt          go to state 155
+    matched       go to state 70
+    unmatched     go to state 71
+    otherStmts    go to state 72
+    expStmt       go to state 73
+    compoundStmt  go to state 74
+    returnStmt    go to state 75
+    breakStmt     go to state 76
+    exp           go to state 77
+    simpleExp     go to state 78
+    andExp        go to state 47
+    unaryRelExp   go to state 48
+    relExp        go to state 49
+    minmaxExp     go to state 50
+    sumExp        go to state 51
+    mulExp        go to state 52
+    unaryExp      go to state 53
+    unaryop       go to state 54
+    factor        go to state 55
+    mutable       go to state 79
+    immutable     go to state 57
+    call          go to state 58
+    constant      go to state 59
+
+
+State 140
+
+   31 matched: IF simpleExp THEN . matched ELSE matched
+   35 unmatched: IF simpleExp THEN . matched
+   36          | IF simpleExp THEN . unmatched
+   37          | IF simpleExp THEN . matched ELSE unmatched
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '{'          shift, and go to state 62
+    ';'          shift, and go to state 63
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    IF           shift, and go to state 64
+    RETURN       shift, and go to state 65
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+    FOR          shift, and go to state 66
+    BREAK        shift, and go to state 67
+    WHILE        shift, and go to state 68
+
+    matched       go to state 156
+    unmatched     go to state 157
+    otherStmts    go to state 72
+    expStmt       go to state 73
+    compoundStmt  go to state 74
+    returnStmt    go to state 75
+    breakStmt     go to state 76
+    exp           go to state 77
+    simpleExp     go to state 78
+    andExp        go to state 47
+    unaryRelExp   go to state 48
+    relExp        go to state 49
+    minmaxExp     go to state 50
+    sumExp        go to state 51
+    mulExp        go to state 52
+    unaryExp      go to state 53
+    unaryop       go to state 54
+    factor        go to state 55
+    mutable       go to state 79
+    immutable     go to state 57
+    call          go to state 58
+    constant      go to state 59
+
+
+State 141
+
+   54 returnStmt: RETURN exp ';' .
+
+    $default  reduce using rule 54 (returnStmt)
+
+
+State 142
+
+   33 matched: FOR ID '=' . iterRange DO matched
+   39 unmatched: FOR ID '=' . iterRange DO unmatched
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    iterRange    go to state 158
+    simpleExp    go to state 159
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 143
+
+   32 matched: WHILE simpleExp DO . matched
+   38 unmatched: WHILE simpleExp DO . unmatched
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '{'          shift, and go to state 62
+    ';'          shift, and go to state 63
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    IF           shift, and go to state 64
+    RETURN       shift, and go to state 65
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+    FOR          shift, and go to state 66
+    BREAK        shift, and go to state 67
+    WHILE        shift, and go to state 68
+
+    matched       go to state 160
+    unmatched     go to state 161
+    otherStmts    go to state 72
+    expStmt       go to state 73
+    compoundStmt  go to state 74
+    returnStmt    go to state 75
+    breakStmt     go to state 76
+    exp           go to state 77
+    simpleExp     go to state 78
+    andExp        go to state 47
+    unaryRelExp   go to state 48
+    relExp        go to state 49
+    minmaxExp     go to state 50
+    sumExp        go to state 51
+    mulExp        go to state 52
+    unaryExp      go to state 53
+    unaryop       go to state 54
+    factor        go to state 55
+    mutable       go to state 79
+    immutable     go to state 57
+    call          go to state 58
+    constant      go to state 59
+
+
+State 144
+
+   56 exp: mutable '=' exp .
+
+    $default  reduce using rule 56 (exp)
+
+
+State 145
+
+   57 exp: mutable ADDASS exp .
+
+    $default  reduce using rule 57 (exp)
+
+
+State 146
+
+   58 exp: mutable SUBASS exp .
+
+    $default  reduce using rule 58 (exp)
+
+
+State 147
+
+   59 exp: mutable MULASS exp .
+
+    $default  reduce using rule 59 (exp)
+
+
+State 148
+
+   60 exp: mutable DIVASS exp .
+
+    $default  reduce using rule 60 (exp)
+
+
+State 149
+
+  103 call: ID '(' args ')' .
+
+    $default  reduce using rule 103 (call)
+
+
+State 150
+
+  106 argList: argList ',' . exp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    exp          go to state 162
+    simpleExp    go to state 78
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 79
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 151
+
+   99 mutable: ID '[' exp ']' .
+
+    $default  reduce using rule 99 (mutable)
+
+
+State 152
+
+    7 scopedVarDecl: STATIC typeSpec . varDeclList ';'
+
+    ID  shift, and go to state 34
+
+    varDeclList  go to state 163
+    varDeclInit  go to state 16
+    varDeclId    go to state 17
+
+
+State 153
+
+    8 scopedVarDecl: typeSpec varDeclList . ';'
+    9 varDeclList: varDeclList . ',' varDeclInit
+
+    ';'  shift, and go to state 164
+    ','  shift, and go to state 25
+
+
+State 154
+
+   46 compoundStmt: '{' localDecls stmtList '}' .
+
+    $default  reduce using rule 46 (compoundStmt)
+
+
+State 155
+
+   49 stmtList: stmtList stmt .
+
+    $default  reduce using rule 49 (stmtList)
+
+
+State 156
+
+   31 matched: IF simpleExp THEN matched . ELSE matched
+   35 unmatched: IF simpleExp THEN matched .
+   37          | IF simpleExp THEN matched . ELSE unmatched
+
+    ELSE  shift, and go to state 165
+
+    $default  reduce using rule 35 (unmatched)
+
+
+State 157
+
+   36 unmatched: IF simpleExp THEN unmatched .
+
+    $default  reduce using rule 36 (unmatched)
+
+
+State 158
+
+   33 matched: FOR ID '=' iterRange . DO matched
+   39 unmatched: FOR ID '=' iterRange . DO unmatched
+
+    DO  shift, and go to state 166
+
+
+State 159
+
+   51 iterRange: simpleExp . TO simpleExp
+   52          | simpleExp . TO simpleExp BY simpleExp
+   64 simpleExp: simpleExp . OR andExp
+
+    OR  shift, and go to state 87
+    TO  shift, and go to state 167
+
+
+State 160
+
+   32 matched: WHILE simpleExp DO matched .
+
+    $default  reduce using rule 32 (matched)
+
+
+State 161
+
+   38 unmatched: WHILE simpleExp DO unmatched .
+
+    $default  reduce using rule 38 (unmatched)
+
+
+State 162
+
+  106 argList: argList ',' exp .
+
+    $default  reduce using rule 106 (argList)
+
+
+State 163
+
+    7 scopedVarDecl: STATIC typeSpec varDeclList . ';'
+    9 varDeclList: varDeclList . ',' varDeclInit
+
+    ';'  shift, and go to state 168
+    ','  shift, and go to state 25
+
+
+State 164
+
+    8 scopedVarDecl: typeSpec varDeclList ';' .
+
+    $default  reduce using rule 8 (scopedVarDecl)
+
+
+State 165
+
+   31 matched: IF simpleExp THEN matched ELSE . matched
+   37 unmatched: IF simpleExp THEN matched ELSE . unmatched
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '{'          shift, and go to state 62
+    ';'          shift, and go to state 63
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    IF           shift, and go to state 64
+    RETURN       shift, and go to state 65
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+    FOR          shift, and go to state 66
+    BREAK        shift, and go to state 67
+    WHILE        shift, and go to state 68
+
+    matched       go to state 169
+    unmatched     go to state 170
+    otherStmts    go to state 72
+    expStmt       go to state 73
+    compoundStmt  go to state 74
+    returnStmt    go to state 75
+    breakStmt     go to state 76
+    exp           go to state 77
+    simpleExp     go to state 78
+    andExp        go to state 47
+    unaryRelExp   go to state 48
+    relExp        go to state 49
+    minmaxExp     go to state 50
+    sumExp        go to state 51
+    mulExp        go to state 52
+    unaryExp      go to state 53
+    unaryop       go to state 54
+    factor        go to state 55
+    mutable       go to state 79
+    immutable     go to state 57
+    call          go to state 58
+    constant      go to state 59
+
+
+State 166
+
+   33 matched: FOR ID '=' iterRange DO . matched
+   39 unmatched: FOR ID '=' iterRange DO . unmatched
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '{'          shift, and go to state 62
+    ';'          shift, and go to state 63
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    IF           shift, and go to state 64
+    RETURN       shift, and go to state 65
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+    FOR          shift, and go to state 66
+    BREAK        shift, and go to state 67
+    WHILE        shift, and go to state 68
+
+    matched       go to state 171
+    unmatched     go to state 172
+    otherStmts    go to state 72
+    expStmt       go to state 73
+    compoundStmt  go to state 74
+    returnStmt    go to state 75
+    breakStmt     go to state 76
+    exp           go to state 77
+    simpleExp     go to state 78
+    andExp        go to state 47
+    unaryRelExp   go to state 48
+    relExp        go to state 49
+    minmaxExp     go to state 50
+    sumExp        go to state 51
+    mulExp        go to state 52
+    unaryExp      go to state 53
+    unaryop       go to state 54
+    factor        go to state 55
+    mutable       go to state 79
+    immutable     go to state 57
+    call          go to state 58
+    constant      go to state 59
+
+
+State 167
+
+   51 iterRange: simpleExp TO . simpleExp
+   52          | simpleExp TO . simpleExp BY simpleExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    simpleExp    go to state 173
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 168
+
+    7 scopedVarDecl: STATIC typeSpec varDeclList ';' .
+
+    $default  reduce using rule 7 (scopedVarDecl)
+
+
+State 169
+
+   31 matched: IF simpleExp THEN matched ELSE matched .
+
+    $default  reduce using rule 31 (matched)
+
+
+State 170
+
+   37 unmatched: IF simpleExp THEN matched ELSE unmatched .
+
+    $default  reduce using rule 37 (unmatched)
+
+
+State 171
+
+   33 matched: FOR ID '=' iterRange DO matched .
+
+    $default  reduce using rule 33 (matched)
+
+
+State 172
+
+   39 unmatched: FOR ID '=' iterRange DO unmatched .
+
+    $default  reduce using rule 39 (unmatched)
+
+
+State 173
+
+   51 iterRange: simpleExp TO simpleExp .
+   52          | simpleExp TO simpleExp . BY simpleExp
+   64 simpleExp: simpleExp . OR andExp
+
+    OR  shift, and go to state 87
+    BY  shift, and go to state 174
+
+    $default  reduce using rule 51 (iterRange)
+
+
+State 174
+
+   52 iterRange: simpleExp TO simpleExp BY . simpleExp
+
+    '*'          shift, and go to state 36
+    '('          shift, and go to state 37
+    '-'          shift, and go to state 38
+    '?'          shift, and go to state 39
+    ID           shift, and go to state 40
+    NUMCONST     shift, and go to state 41
+    STRINGCONST  shift, and go to state 42
+    CHARCONST    shift, and go to state 43
+    NOT          shift, and go to state 44
+    BOOLCONST    shift, and go to state 45
+
+    simpleExp    go to state 175
+    andExp       go to state 47
+    unaryRelExp  go to state 48
+    relExp       go to state 49
+    minmaxExp    go to state 50
+    sumExp       go to state 51
+    mulExp       go to state 52
+    unaryExp     go to state 53
+    unaryop      go to state 54
+    factor       go to state 55
+    mutable      go to state 56
+    immutable    go to state 57
+    call         go to state 58
+    constant     go to state 59
+
+
+State 175
+
+   52 iterRange: simpleExp TO simpleExp BY simpleExp .
+   64 simpleExp: simpleExp . OR andExp
+
+    OR  shift, and go to state 87
+
+    $default  reduce using rule 52 (iterRange)

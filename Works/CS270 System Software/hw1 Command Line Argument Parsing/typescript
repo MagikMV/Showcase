@@ -1,0 +1,14 @@
+Script started on Fri 14 Feb 2020 05:36:15 AM PST
+[?1034hbash-4.2$ gcc hw1.c 
+bash-4.2$ ./a.out 
+Enter a string(6 words maximum): ls -l filename    
+Number of tokens: 3
+Token 1: ls
+Token 2: -l
+Token 3: file
+bash-4.2$ wc -l *.c
+100 hw1.c
+bash-4.2$ exit
+exit
+
+Script done on Fri 14 Feb 2020 05:37:16 AM PST

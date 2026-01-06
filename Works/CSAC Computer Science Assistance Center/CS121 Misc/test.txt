@@ -1,0 +1,28 @@
+// This is a text file
+
+/* open */
+int row, col;
+char **maze;
+
+infile >> row;
+infile >> col;
+
+/* allocate dynamically */
+
+for(int i = 0; i < row; i++)
+    for(int j = 0; j < col; j++)
+	infile >> maze[i][j];
+
+/* close */
+
+
+bool inComment = false;
+
+
+while
+   if(inComment)
+	if(line[i] == '*' && line[i+1] == '/'
+
+===============
+if(line[i] == '/' && line[i+1] == '*')
+    inComment = true;

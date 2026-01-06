@@ -1,0 +1,391 @@
+/* msh.c   [my shell]
+ *
+ * Miguel Villanueva
+ * CS 240
+ */
+
+/*   KNOWN ISSUES
+   ================
+   1) Multiple Commands separated by ';'
+        - Prompt '?:' appears after each command
+
+   2) Reading from 'mshrc'
+        - Commands with options bug out or do not work
+        - Commands are not added to history
+
+   3) Aliasing
+	- Not working, therefore not included
+
+   4) PATH
+	- Not working, therefore not  included
+
+   5) History mechanism
+	- Recall commands by number not implemented
+        - Arrow key scroll not implemented
+
+   6) Piping
+	- Not working, therefore not included
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+// ------------------------------------------------- //
+//    Queue
+//  ========= 
+typedef struct Node
+{
+    void *data;
+    struct Node *next;
+}Node;
+
+typedef struct Queue
+{
+    struct Node *front;
+    struct Node *last;
+    unsigned int size;
+}Queue;
+
+void Init(Queue *q);
+char *front(Queue *q);
+void pop(Queue *q);
+void push(Queue *q, void *data);
+int getQueueSize(Queue *q);
+// ................................................. //
+//    Definitions
+//  ===============
+
+//  Initialize the queue
+void Init(Queue *q)
+{
+    q->front = NULL;
+    q->last = NULL;
+    q->size = 0;
+}
+
+//  Return data at front of queue
+char *front(Queue *q)
+{
+    return q->front->data;
+}
+
+//  Remove front of queue
+void Dequeue(Queue *q)
+{
+    //  Decrease size of queue
+    q->size--;
+
+    Node *t = q->front;
+    q->front = q->front->next;
+    free(t);
+}
+
+//  Add to queue
+void Enqueue(Queue *q, void *data)
+{
+    //  Increase size of queue
+    q->size++;
+
+    //  Empty case
+    if(q->front == NULL)
+    {
+        q->front = (Node *)malloc(sizeof(Node));
+        q->front->data = data;
+        q->front->next = NULL;
+        q->last = q->front;
+    }
+    else
+    {
+        q->last->next = (Node *)malloc(sizeof(Node));
+        q->last->next->data = data;
+        q->last->next->next = NULL;
+        q->last = q->last->next;
+    }
+}
+
+//  Return queue size
+int getQueueSize(Queue *q)
+{
+    return q->size;
+}
+
+// ------------------------------------------------- //
+//    Macros, Prototypes, and Globals 
+//  ===================================
+
+#define MAX_STRING 512
+#define MAX_TOKEN 64
+#define TOKEN_DELIM " \t\n\r"
+
+char *readLine(void);
+char **parseLine(char *line);
+int msh_exit();
+void msh_read();
+void msh_history();
+void msh_bang();
+int msh_launch(char **args);
+int msh_execute(char **args);
+void msh_loop(void);
+
+int histCount = 0;
+char **history = NULL;
+Queue execQueue;
+// ------------------------------------------------- //
+//    Main
+//  ========
+
+int main()
+{
+    Init(&execQueue);
+    msh_loop();    
+}
+
+
+// readLine
+    // Reads the command line one character at a time
+char *readLine(void)
+{
+    int length = MAX_STRING;
+    char *line = malloc(length * sizeof(char));
+    int index = 0;
+
+    int c;   //   'c' declared as int to check EOF
+    
+    while(1)
+    {
+	//  Read a character
+	c = getchar();
+
+	//  If EOF, replace with null character and return
+            //  If ';' return line instance
+	if(c == EOF || c == '\n' || c == ';')
+	{
+	    line[index] = '\0';
+	    return line;
+	}
+	//  Else put character in string
+	else
+	{
+	    line[index] = c;
+	}
+
+	//  Increment index
+	index++;
+    }
+}
+
+// parseLine
+    // Parses the line read from the command line
+char **parseLine(char *line)
+{
+    int size = MAX_TOKEN;
+    char **args = malloc(size * sizeof(char*));
+    int index = 0;
+    char *token;
+
+    if(!args)
+    {
+	fprintf(stderr, "msh: allocation error\n");
+	exit(EXIT_FAILURE);
+    }
+    
+    token = strtok(line, TOKEN_DELIM);
+    while(token != NULL)
+    {
+	args[index] = token;
+	index++;
+	
+	token = strtok(NULL, TOKEN_DELIM);
+    }
+    args[index] = NULL;
+    return args;
+}
+
+// msh_exit
+    // Built in shell function to exit
+int msh_exit()
+{
+    printf("Exiting msh");
+    return 0;
+}
+
+// msh_read
+    // Built in shell function to read mshrc
+    // Executes each command in file
+void msh_read()
+{
+    int length = MAX_STRING;
+    char *file = malloc(length *sizeof(char));
+    char **cmds;
+    FILE *f;
+
+    f = fopen("mshrc", "r");
+    if(f == NULL)
+    {
+        printf("ERROR, unable to open mshrc\n");
+    }
+    printf("=================\n");
+    printf("  Opening mshrc\n");
+    printf("=================\n");
+    while(fgets(file, sizeof(file), f) != NULL)
+    {
+	cmds = parseLine(file);
+        msh_execute(cmds);
+    }
+    printf("=================\n");
+    printf("  Closing mshrc\n");
+    printf("=================\n");
+    fclose(f);
+}
+
+void msh_history()
+{
+    int i;
+
+    printf("===========\n");
+    printf("  History\n");
+    printf("===========\n");
+
+    //  Display only 20 items
+    if (histCount > 20)
+    {
+	for(i = histCount - 20; i < histCount; i++)
+        {
+	    printf("%d: %s\n", i, history[i]); 
+        }
+    }
+    else
+    {
+	for(i = 0; i < histCount; i++)
+        {
+	    printf("%d: %s\n", i, history[i]);
+        }
+    }
+}
+
+
+// msh_launch
+    // Launches program and waits for termination
+int msh_launch(char **args)
+{
+    pid_t pid, wpid;
+    int status;
+
+    pid = fork();
+    if(pid == 0)
+    {
+	//  Child process
+	if(execvp(args[0], args) == -1)
+	{
+	    perror("msh");
+	}
+	exit(EXIT_FAILURE);
+    }
+    else if(pid < 0)
+    {
+	//  Forking error
+	perror("msh");
+    }
+    else
+    {
+	//  Parent process
+	do
+	{
+	    wpid = waitpid(pid, &status, WUNTRACED);	   
+	}while(!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
+
+    return 1;
+}
+
+// msh_execute
+    // Execute built in shell function(s) or launch program
+int msh_execute(char **args)
+{
+    int i;
+
+    if(args[0] == NULL)
+    {
+	// An empty command was entered
+	return 1;
+    }
+    
+    //  Built in exit function
+    if(strcmp(args[0], "exit") == 0)
+    {
+	return msh_exit();
+    }
+
+    //  Built in alias function
+    if(strcmp(args[0], "alias") == 0)
+    {
+	printf("'alias' command unavailable\n");
+    }
+    
+    //  Built in unalias function
+    if(strcmp(args[0], "unalias") == 0)
+    {
+	printf("'unalias' command unavailable\n");
+    }
+    
+    //  Built in PATH function
+    if(strcmp(args[0], "export") == 0)
+    {
+	printf("'export' command unavailable\n");
+    }
+
+    //  Built in history function
+    if(strcmp(args[0], "history") == 0)
+    {
+	msh_history();
+    }
+
+    //  Built in bang function
+    if(strcmp(args[0], "!!") == 0)
+    {
+	return msh_launch(parseLine(history[histCount - 2]));
+    }
+
+    //  If no exit, then launch
+    return msh_launch(args);
+}
+
+// msh_loop
+    // Shell loop, recieves input and executes it
+void msh_loop(void)
+{
+    char *line;
+    char **args;
+    int status;
+
+    msh_read();
+    do
+    {
+        printf("?: ");      
+	line = readLine();
+        
+	//  Add command to queue
+	    //  Update history
+        Enqueue(&execQueue, line);
+        history = (char **)realloc(history, (histCount + 1) *
+                  sizeof(char *));
+        if(front(&execQueue) != NULL)
+        {
+            history[histCount++] = strdup(front(&execQueue));
+        }
+
+	args = parseLine(line);
+	status = msh_execute(args);
+
+	//  Remove command from queue
+        Dequeue(&execQueue);
+
+	free(line);
+	free(args);
+    }while(status);
+}
+

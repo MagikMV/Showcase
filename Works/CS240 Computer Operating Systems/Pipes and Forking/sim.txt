@@ -1,0 +1,249 @@
+/* sim.c
+ *
+ * Miguel Villanueva
+ * CS 240
+ */
+
+/* PREFACE:
+     This is my best attempt at recreating the solution code that
+     was shown in class.  
+
+     I do not intend this as plagerism, however I figured after
+     all the issues I ran into, it was worth turning in. 
+
+     After viewing the results I know it does not cover everything
+     required by the assignment, although, again this is my best
+     attempt at a recreation, so there may be information I am
+     missing.       
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+#define SETUP 1
+#define TEARDOWN 0
+
+void producer(int pos);
+void consumer(int pos);
+void buffer(void);
+void special_pipes(int mode);
+void fork_participants(void); 
+
+int end;
+
+int main(int argc, char *argv[])
+{
+    register int i;
+    int status;
+    int count = 0;
+    pid_t pid, wpid;
+
+    end = time(NULL) + 30;
+
+    printf("Setting up named pipes\n");
+    special_pipes(SETUP);
+    printf("Forking participants\n");
+    fork_participants();
+
+    while(count < 9)
+    {
+	wpid = waitpid(-1, &status, WNOHANG);
+	if(wpid > 0 && WIFEXITED(status))
+        {
+	    count++;
+	    printf("Process %d just exited\n", wpid);
+	}
+	sleep(1);
+    }
+
+    printf("Removing named pipes\n");
+    special_pipes(TEARDOWN);
+
+    return 0;
+}
+
+void producer(int pos)
+{
+    register int i;
+    int fd;
+    char c = '0';
+    char myname[16], mypipe[10], mydata[100];
+    unsigned int seed = (unsigned int)time(NULL);
+    srand(seed);
+
+    sprintf(myname, "Producer %d", pos);
+    sprintf(mypipe, "ppipe%d", pos);
+    printf("%s has started up using %s\n", myname, mypipe);
+
+    fd = open(mypipe, O_WRONLY);
+    printf("%s has connected to the write end of producer %s\n", 
+           myname, mypipe);
+    
+    close(fd);
+    printf("%s is shutting down\n", myname);
+    exit(0);
+}
+
+void consumer(int pos)
+{
+    register int i;
+    int fd;
+    ssize_t size;
+    char myname[16], mypipe[10], mydata[100];
+    unsigned int seed = (unsigned int)time(NULL);
+    srand(seed);
+
+    sprintf(myname, "Consumer %d", pos);
+    sprintf(mypipe, "cpipe%d", pos);
+    printf("%s has started up using %s\n", myname, mypipe);
+
+    fd = open(mypipe, O_RDONLY);
+    printf("%s has connected to the read end of consumer %s\n",
+           myname, mypipe);
+
+    while(time(NULL) < end)
+    {
+	size = read(fd, mydata, 100);
+	printf("%s has recieved '%s' from the buffer\n", myname, mydata);
+	sleep(rand()%6);
+    }
+
+    close(fd);
+    printf("%s is shutting down\n", myname);
+    exit(0);
+}
+
+void buffer(void)
+{
+    register int i, j;
+    ssize_t size;
+    char mycpipe[10], myppipe[10], mydata[100];
+    int cfd[4], pfd[4];
+
+    printf("Buffer has started up\n");
+
+    for(i = 0; i < 4; i++)
+    {
+	sprintf(myppipe, "ppipe%d", i + 1);
+	sprintf(mycpipe, "cpipe%d", i + 1);
+	pfd[i] = open(myppipe, O_RDONLY | O_NONBLOCK);
+	printf("Buffer has connected to the read end of producer %s\n",
+               myppipe);
+	cfd[i] = open(mycpipe, O_WRONLY);
+	printf("Buffer has connected to the write end of consumer %s\n",
+	       mycpipe);
+    }
+
+    i = 0;
+    while(time(NULL) < end)
+    {
+	for(j = 0; j < 4; j++)
+	{
+	    size = read(pfd[j], mydata, 100);
+	    if(size > 0)
+	    {
+		printf("Buffer recieved '%s' from producer %d and is passing\
+		       it to consumer %d\n", mydata, j + 1, j + 1);
+		write(cfd[j], mydata, strlen(mydata));
+	    }
+	}
+	i++;
+    }
+
+    for(i = 0; i < 4; i++)
+    {
+	close(cfd[i]);
+	close(pfd[i]);
+    }
+
+    printf("Buffer is shutting down\n");
+    exit(0);
+}
+
+void special_pipes(int mode)
+{
+    register int i;
+    int retval;
+    char filename[10];
+
+    for(i = 1; i <= 4; i++)
+    {
+	sprintf(filename, "ppipe%d", i);
+	if(mode == SETUP)
+	    retval = mkfifo(filename, 0666);
+	else
+	    retval = unlink(filename);
+	if(retval != 0)
+	{
+	    perror("process consumer fifo");
+	    exit(1);
+	}
+    }
+
+    for(i = 1; i <= 4; i++)
+    {
+	sprintf(filename, "cpipe%d", i);
+	if(mode == SETUP)
+	    retval = mkfifo(filename, 0666);
+	else
+	    retval = unlink(filename);
+	if(retval != 0)
+	{
+	    perror("process consumer fifo");
+	    exit(1);
+	}
+    }
+}
+
+void fork_participants(void)
+{
+    register int i;
+    pid_t pid;
+
+    //  Producer
+    for(i = 1; i <= 4; i++)
+    {
+	pid = fork();
+	if(pid == 0)
+	{
+	    producer(i);
+	}
+	else if(pid < 0)
+	{
+	    perror("fork producer");
+	    exit(1);
+	}
+    }
+
+    //  Consumer
+    for(i = 1; i <= 4; i++)
+    {
+	pid = fork();
+	if(pid == 0)
+	{
+	    consumer(i);
+	}
+	else if(pid < 0)
+	{
+	    perror("fork consumer");
+	    exit(1);
+	}
+    }
+
+    //  Buffer
+    pid = fork();
+    if(pid == 0)
+    {
+	buffer();
+    }
+    else if(pid < 0)
+    {
+	exit(1);
+    }
+}

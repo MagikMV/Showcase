@@ -1,0 +1,47 @@
+/* credits.txt
+ *
+ * Miguel Villanueva
+ * CS 270
+ */
+
+Sources consulted for scripts:
+============================================================================
+-----------
+[add_rm.sh]
+-----------
+  http://www2.cs.uidaho.edu/~bruceb/cs270/Lectures/12_Scripts.pdf
+  http://www2.cs.uidaho.edu/~bruceb/cs270/Lectures/13_MoreScripts.pdf
+  https://unix.stackexchange.com/questions/181937/how-create-a-temporary-
+file-in-shell-script
+  https://www.geeksforgeeks.org/echo-command-in-linux-with-examples/
+  https://explainshell.com/
+  https://linuxize.com/post/bash-if-else-statement/
+  https://www.howtoforge.com/linux-nl-command/
+  https://linuxhint.com/trim_string_bash/
+  https://www.geeksforgeeks.org/sed-command-in-linux-unix-with-examples/
+  https://askubuntu.com/questions/509039/how-to-delete-line-numbers-
+in-a-code-block
+  https://www.cyberciti.biz/tips/delete-leading-spaces-from-front-of-
+each-word.html
+  https://itnext.io/bash-scripting-everything-you-need-to-know-about-bash-
+shell-programming-cd08595f2fba
+  https://devhints.io/bash
+------------
+[format.sh ]
+------------
+  https://devconnected.com/how-to-check-if-file-or-directory-exists-in-bash/
+  https://unix.stackexchange.com/questions/423607/remove-underscore-in-
+variable-with-bash
+  https://stackoverflow.com/questions/11818408/convert-all-file-extensions-
+to-lower-case
+  https://www.cyberciti.biz/faq/bash-rename-files/
+  https://stackoverflow.com/questions/9590935/change-extension-of-file-
+using-shell-script
+  https://www.cyberciti.biz/faq/bash-rename-files/
+------------
+[backup.sh ]
+------------
+  https://stackoverflow.com/questions/12989615/check-if-file-is-in-a-given-
+directory-or-sub-directory-in-bash
+  https://www.geeksforgeeks.org/cp-command-linux-examples/  
+  https://linuxize.com/post/bash-if-else-statement/
